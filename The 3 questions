@@ -1,0 +1,9 @@
+--New cases of covid
+
+SELECT dea.continent,dea.location, dea.date, dea.population, dea.new_cases
+,SUM(CONVERT(INT, dea.new_cases)) OVER (PARTITION BY dea.location ORDER BY dea.location, dea.date) AS RollingNewCases
+
+FROM P1.dbo.CovidDeaths dea
+
+WHERE dea.continent IS NOT NULL AND location LIKE '%states%'
+ORDER BY 2,3
