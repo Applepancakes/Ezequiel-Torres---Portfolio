@@ -1,9 +1,23 @@
---New cases of covid
+--CTE Rolling New cases of covid using partition
+Can you provide a temporal analysis of COVID-19 cases? 
 
-SELECT dea.continent,dea.location, dea.date, dea.population, dea.new_cases
-,SUM(CONVERT(INT, dea.new_cases)) OVER (PARTITION BY dea.location ORDER BY dea.location, dea.date) AS RollingNewCases
+Showcasing the daily new cases and the rolling total, and the percentage of cases of the total population
 
-FROM P1.dbo.CovidDeaths dea
 
-WHERE dea.continent IS NOT NULL AND location LIKE '%states%'
-ORDER BY 2,3
+With PopvsNew (Continent, Location, Date, Population, New_Cases, RollingNewCases)
+as
+(
+Select dea.continent, dea.location, CONVERT(VARCHAR,dea.date, 23), dea.population, dea.New_Cases
+, SUM(CONVERT(int,dea.new_cases)) OVER (Partition by dea.Location Order by dea.location, dea.Date) as RollingNewCases
+
+From P1..CovidDeaths dea
+where dea.continent is not null 
+
+)
+Select *, (RollingNewCases/Population) AS 'Cases per Capita'
+From PopvsNew
+
+
+----------
+
+
