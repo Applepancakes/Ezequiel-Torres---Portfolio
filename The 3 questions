@@ -60,6 +60,19 @@ WHERE Location LIKE '%states%' AND date < '2021-01-01'
 
 ----------------------
 
+What was the impact?
+
+CREATE VIEW OverallImpact AS
+SELECT
+    location,
+    MAX(date) AS latest_date,
+    MAX(total_cases) AS total_cases,
+    MAX(total_deaths) AS total_deaths,
+    MAX(total_recoveries) AS total_recoveries
+FROM
+    CovidCases
+GROUP BY
+    location;
 
 
 
