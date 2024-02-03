@@ -1,8 +1,7 @@
 --CTE Rolling New cases of covid using partition
-Can you provide a temporal analysis of COVID-19 cases? 
+Can you provide a temporal analysis of COVID-19 cases? Showcasing the daily new cases and the rolling total, and the percentage of cases of the total population
 
-Showcasing the daily new cases and the rolling total, and the percentage of cases of the total population
-
+How many new cases were reported on the 2nd of Janurary 2021 in the US? How many is that compared to the total population?
 
 With PopvsNew (Continent, Location, Date, Population, New_Cases, RollingNewCases)
 as
@@ -15,9 +14,24 @@ where dea.continent is not null
 
 )
 Select *, (RollingNewCases/Population) AS 'Cases per Capita'
+
 From PopvsNew
 
+WHERE Location LIKE '%states%' AND date = '2021-01-02'
 
 ----------
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
