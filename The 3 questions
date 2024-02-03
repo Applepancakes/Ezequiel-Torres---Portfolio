@@ -13,11 +13,12 @@ From P1..CovidDeaths dea
 where dea.continent is not null 
 
 )
-Select *, (RollingNewCases/Population) AS 'Cases per Capita'
+Select *, (RollingNewCases/Population) * 100 AS 'Percent of Total Population'
 
 From PopvsNew
 
 WHERE Location LIKE '%states%' AND date = '2021-01-02'
+
 
 ----------
 
