@@ -21,15 +21,44 @@ WHERE Location LIKE '%states%' AND date = '2021-01-02'
 
 
 ----------
+-- Using Temp Table to perform similar calculation on Partition 
+In the year of 2020, how did the US compare to the UK in new vaccinations?
 
 
+DROP TABLE IF exists #PercentPopulationVaccinated
+CREATE TABLE #PercentPopulationVaccinated
+(
+Continent nvarchar(255),
+Location nvarchar(255),
+Date datetime,
+Population numeric,
+New_vaccinations numeric,
+RollingPeopleVaccinated numeric
+)
+
+INSERT INTO #PercentPopulationVaccinated
+SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
+, SUM(CONVERT(int,vac.new_vaccinations)) OVER (Partition BY dea.Location Order BY dea.location, dea.Date) as RollingPeopleVaccinated
 
 
+FROM P1..CovidDeaths dea
+
+JOIN P1..CovidVaccinations vac
+	ON dea.location = vac.location
+	and dea.date = vac.date
 
 
+SELECT *, (RollingPeopleVaccinated/Population) * 100
+FROM #PercentPopulationVaccinated
+WHERE Location LIKE '%king%' AND date < '2021-01-01'
 
 
+SELECT *, (RollingPeopleVaccinated/Population) * 100
+FROM #PercentPopulationVaccinated
+WHERE Location LIKE '%states%' AND date < '2021-01-01'
 
+
+----------------------
 
 
 
