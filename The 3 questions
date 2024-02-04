@@ -1,11 +1,8 @@
-
-
---CTE Rolling New cases of covid using partition
-
 Can you provide a temporal analysis of COVID-19 cases? Showcasing the daily new cases and the rolling total, and the percentage of cases of the total population
 
 How many new cases were reported on the 2nd of Janurary 2021 in the US? How many is that compared to the total population?
 
+--CTE Rolling New cases of covid using partition
 With PopvsNew (Continent, Location, Date, Population, New_Cases, RollingNewCases)
 as
 (
@@ -16,6 +13,8 @@ From P1..CovidDeaths dea
 where dea.continent is not null 
 
 )
+
+-- Final SELECT from CTE with additional calculation
 Select *, (RollingNewCases/Population) * 100 AS 'Percent of Total Population'
 
 From PopvsNew
@@ -44,6 +43,8 @@ RollingPeopleVaccinated numeric
 )
 
 INSERT INTO #PercentPopulationVaccinated
+-- Inserting data into the temp table
+
 SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
 , SUM(CONVERT(int,vac.new_vaccinations)) OVER (Partition BY dea.Location Order BY dea.location, dea.Date) as RollingPeopleVaccinated
 
@@ -55,6 +56,7 @@ JOIN P1..CovidVaccinations vac
 	and dea.date = vac.date
 
 
+-- Two SELECT statements for the different countries
 
 SELECT *, (RollingPeopleVaccinated/Population) * 100
 FROM #PercentPopulationVaccinated
@@ -74,6 +76,7 @@ Creating view for visualization purposes
 What was the the final impact?
 
 CREATE VIEW OverallImpact AS
+-- Creating a view with aggregated data
 SELECT
     dea.continent,
     dea.location,
@@ -92,7 +95,7 @@ GROUP BY
     dea.continent, dea.location, dea.population;
 
 
-
+-- Selecting data from the view
 SELECT * FROM dbo.OverallImpact;
 
 
