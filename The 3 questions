@@ -65,21 +65,28 @@ WHERE Location LIKE '%states%' AND date < '2021-01-01'
 
 ----------------------
 
+Creating view for visualization purposes
 
-
-What was the impact?
+What was the the final impact?
 
 CREATE VIEW OverallImpact AS
 SELECT
-    location,
-    MAX(date) AS latest_date,
-    MAX(total_cases) AS total_cases,
-    MAX(total_deaths) AS total_deaths,
-    MAX(total_recoveries) AS total_recoveries
+    dea.continent,
+    dea.location,
+    MAX(dea.date) AS 'Last recorded date',
+	dea.population,
+    MAX(CONVERT(INT, dea.total_cases)) AS 'Total cases',
+    MAX(CONVERT(INT, dea.total_deaths)) AS 'Total deaths',
+    MAX(CONVERT(INT, vac.total_tests)) AS 'Total tests',
+	MAX(CONVERT(INT, vac.people_fully_vaccinated)) AS 'Fully Vaccinated'
 FROM
-    CovidCases
+    P1.dbo.CovidDeaths dea
+INNER JOIN
+    P1.dbo.CovidVaccinations vac ON dea.location = vac.location
+WHERE dea.continent is not null
 GROUP BY
-    location;
+    dea.continent, dea.location, dea.population;
+
 
 
 
