@@ -1,4 +1,7 @@
+
+
 --CTE Rolling New cases of covid using partition
+
 Can you provide a temporal analysis of COVID-19 cases? Showcasing the daily new cases and the rolling total, and the percentage of cases of the total population
 
 How many new cases were reported on the 2nd of Janurary 2021 in the US? How many is that compared to the total population?
@@ -52,6 +55,7 @@ JOIN P1..CovidVaccinations vac
 	and dea.date = vac.date
 
 
+
 SELECT *, (RollingPeopleVaccinated/Population) * 100
 FROM #PercentPopulationVaccinated
 WHERE Location LIKE '%king%' AND date < '2021-01-01'
@@ -89,6 +93,7 @@ GROUP BY
 
 
 
+SELECT * FROM dbo.OverallImpact;
 
 
 
