@@ -1,3 +1,6 @@
+
+------- HWID PULL
+
 # Set TLS Protocol Version to Tls 1.2
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
@@ -24,3 +27,47 @@ Get-WindowsAutopilotInfo -OutputFile AutopilotHWID.csv
 
 # Copy AutopilotHWID.csv from C:\HWID to D:\Temp, overwriting if it already exists
 Copy-Item -Path "C:\HWID\AutopilotHWID.csv" -Destination "D:\Temp" -Force
+
+
+---------------------------------------------------------------------------------------------
+
+# System Information Collector
+
+# Get operating system details
+$osDetails = Get-CimInstance Win32_OperatingSystem
+
+# Get hardware specifications
+$hardwareInfo = Get-CimInstance Win32_ComputerSystem
+
+# Get network configuration
+$networkInfo = Get-CimInstance Win32_NetworkAdapterConfiguration | Where-Object { $_.IPEnabled -eq $true }
+
+# Get installed software
+$installedSoftware = Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | 
+                     Select-Object DisplayName, DisplayVersion, Publisher, InstallDate |
+                     Where-Object { $_.DisplayName -ne $null }
+
+# Display collected information
+Write-Host "Operating System Details:"
+Write-Host "  Caption: $($osDetails.Caption)"
+Write-Host "  Version: $($osDetails.Version)"
+Write-Host "  Architecture: $($osDetails.OSArchitecture)"
+Write-Host "  Manufacturer: $($osDetails.Manufacturer)"
+Write-Host ""
+
+Write-Host "Hardware Specifications:"
+Write-Host "  Manufacturer: $($hardwareInfo.Manufacturer)"
+Write-Host "  Model: $($hardwareInfo.Model)"
+Write-Host "  Total Memory (GB): $($hardwareInfo.TotalPhysicalMemory / 1GB)"
+Write-Host ""
+
+Write-Host "Network Configuration:"
+Write-Host "  IP Address: $($networkInfo.IPAddress)"
+Write-Host "  Subnet Mask: $($networkInfo.IPSubnet)"
+Write-Host ""
+
+Write-Host "Installed Software:"
+$installedSoftware | Format-Table -AutoSize
+
+
+
